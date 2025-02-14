@@ -27,9 +27,19 @@ export default tseslint.config(
   },
   {
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn'
+      '@typescript-eslint/no-explicit-any': 'off', // Permite `any` para flexibilidade
+      '@typescript-eslint/no-floating-promises': 'error', // Agora lança erro para evitar falhas silenciosas
+      '@typescript-eslint/no-unsafe-argument': 'warn',
+      '@typescript-eslint/await-thenable': 'warn', // Evita `await` em valores não `thenable`
+      'no-multiple-empty-lines': 'off',
+      'linebreak-style': ['error', 'unix'],
+      'import/order': [
+        'warn',
+        {
+          groups: ['builtin', 'external', 'internal'],
+          alphabetize: { order: 'asc', caseInsensitive: true },
+        },
+      ],
     },
   },
 );
