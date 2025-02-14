@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Pet } from './pet.entity';
 import { PetsService } from './pets.service';
-import { CreatePetInput } from './dto/createPet.input';
+import { CreatePet } from './dto/createPet.input';
 
 @Resolver(of => Pet)
 export class PetsResolver {
@@ -13,7 +13,7 @@ export class PetsResolver {
   }
 
   @Mutation(returns => Pet)
-  create(@Args('pet') pet: CreatePetInput): Promise<Pet> {
+  create(@Args('pet') pet: CreatePet): Promise<Pet> {
     return this.petsService.create(pet);
   }
 }
