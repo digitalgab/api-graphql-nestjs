@@ -1,5 +1,6 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { Field, InputType, Int } from "@nestjs/graphql";
 import { IsIn, IsNotEmpty, IsString } from "class-validator";
+import { Owner } from "src/owners/owner.entity";
 
 @InputType()
 export class CreatePetInput {
@@ -12,7 +13,12 @@ export class CreatePetInput {
   @IsIn(['Cat', 'Dog', 'cat', 'dog'], {
     message: 'Tipo de animal inválido. Deve ser Cat ou Dog',
   })  
+
   @IsNotEmpty()
-  @Field({ nullable: true })
-  type?: string;
+  @Field()
+  type: string;
+
+  @IsNotEmpty()
+  @Field(() => Int)
+  ownerId: number;
 }

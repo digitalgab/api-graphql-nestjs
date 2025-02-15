@@ -2,7 +2,7 @@ import { IsString } from 'class-validator';
 import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
 
 @InputType()
-export class UpdateOwnerInput extends PartialType(CreateOwnerInput) {
+export class UpdateOwnerInput {
   @Field(() => Int)
   id: number;
   
