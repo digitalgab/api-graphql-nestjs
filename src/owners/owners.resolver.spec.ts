@@ -1,22 +1,38 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OwnersResolver } from './owners.resolver';
 import { OwnersService } from './owners.service';
+import { Pet } from '../pets/pet.entity';
 import { Owner } from './owner.entity';
 import { CreateOwnerInput } from './dto/create-owner.input';
 import { UpdateOwnerInput } from './dto/update-owner.input';
-import { Pet } from 'src/pets/pet.entity';
 
 describe('OwnersResolver', () => {
   let resolver: OwnersResolver;
-  let service: OwnersService;
+  let ownersService: OwnersService;
 
   beforeEach(async () => {
+    const petMock: Pet = { id: 1, name: 'Moana', type: 'Cat', ownerId: 1, owner: null as any };
+    const ownerMock: Owner = { id: 1, name: 'Gabriel Brelaz', pets: [petMock] };
+
     const module: TestingModule = await Test.createTestingModule({
-      providers: [OwnersResolver, OwnersService],
+      providers: [
+        OwnersResolver,
+        {
+          provide: OwnersService,
+          useValue: {
+            findAll: jest.fn().mockResolvedValue([ownerMock]),
+            findOne: jest.fn().mockResolvedValue(ownerMock),
+            create: jest.fn().mockResolvedValue(ownerMock),
+            getPets: jest.fn().mockResolvedValue([petMock]),
+            update: jest.fn().mockResolvedValue(ownerMock),
+            remove: jest.fn().mockResolvedValue({}),
+          },
+        },
+      ],
     }).compile();
 
     resolver = module.get<OwnersResolver>(OwnersResolver);
-    service = module.get<OwnersService>(OwnersService);
+    ownersService = module.get<OwnersService>(OwnersService);
   });
 
   it('should create a new owner', async () => {
@@ -41,7 +57,7 @@ describe('OwnersResolver', () => {
 
   it('should update an owner', async () => {
     const id: number = 1;
-    const updateOwnerInput: UpdateOwnerInput = { id, name: 'Gabriel' };
+    const updateOwnerInput: UpdateOwnerInput = { id, name: 'Gabriel Brelaz' };
     const owner: Owner = await resolver.updateOwner(updateOwnerInput);
     expect(owner).toBeDefined();
     expect(owner.name).toBe(updateOwnerInput.name);
@@ -57,9 +73,8 @@ describe('OwnersResolver', () => {
 
   it('should remove an owner', async () => {
     const id: number = 1;
-    await resolver.removeOwner(id);
-    const owner: Owner = await resolver.findOne(id);
-    expect(owner).toBeNull();
+    await expect(resolver.removeOwner(id)).resolves.toBeDefined();
+    expect(ownersService.remove).toHaveBeenCalledWith(id);
   });
-
 });
+

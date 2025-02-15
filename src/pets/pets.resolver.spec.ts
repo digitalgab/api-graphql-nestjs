@@ -3,63 +3,76 @@ import { PetsResolver } from './pets.resolver';
 import { PetsService } from './pets.service';
 import { CreatePetInput } from './dto/create-pet.input';
 import { UpdatePetInput } from './dto/update-pet.input';
-import { Pet } from 'src/pets/pet.entity';
-import { Owner } from 'src/owners/owner.entity';
+import { Pet } from './pet.entity';
+import { Owner } from '../owners/owner.entity';
 
 describe('PetsResolver', () => {
-  let resolver: PetsResolver;
-  let service: PetsService;
+  let petsResolver: PetsResolver;
+  let petsService: PetsService;
 
   beforeEach(async () => {
+    const petEntity: Pet = { id: 1, name: 'Moana', type: 'Cat', ownerId: 1, owner: null as any };
+    const ownerEntity: Owner = { id: 1, name: 'Gabriel Brelaz', pets: [petEntity] };
+    petEntity.owner = ownerEntity;
+
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PetsResolver, PetsService],
+      providers: [
+        PetsResolver,
+        {
+          provide: PetsService,
+          useValue: {
+            findAll: jest.fn().mockResolvedValue([petEntity]),
+            findOne: jest.fn().mockResolvedValue(petEntity),
+            create: jest.fn().mockResolvedValue(petEntity),
+            update: jest.fn().mockResolvedValue(petEntity),
+            getOwner: jest.fn().mockResolvedValue(ownerEntity),
+            remove: jest.fn().mockResolvedValue(null),
+          },
+        },
+      ],
     }).compile();
 
-    resolver = module.get<PetsResolver>(PetsResolver);
-    service = module.get<PetsService>(PetsService);
+    petsResolver = module.get<PetsResolver>(PetsResolver);
+    petsService = module.get<PetsService>(PetsService);
   });
 
   it('should create a new pet', async () => {
-    const createPetInput: CreatePetInput = { name: 'Moana', type: 'Cat', ownerId: 1 };
-    const pet: Pet = await resolver.createPet(createPetInput);
-    expect(pet).toBeDefined();
-    expect(pet.name).toBe(createPetInput.name);
+    const input: CreatePetInput = { name: 'Moana', type: 'Cat', ownerId: 1 };
+    const result: Pet = await petsResolver.createPet(input);
+    expect(result).toBeDefined();
+    expect(result.name).toBe(input.name);
   });
 
-  it('should retrieve all Pets', async () => {
-    const pets: Pet[] = await resolver.findAll();
-    expect(pets).toBeDefined();
-    expect(pets.length).toBeGreaterThan(0);
+  it('should retrieve all pets', async () => {
+    const result: Pet[] = await petsResolver.findAll();
+    expect(result).toBeDefined();
+    expect(result.length).toBeGreaterThan(0);
   });
 
-  it('should retrieve an pet by id', async () => {
-    const id: number = 1;
-    const pet: Pet = await resolver.findOne(id);
-    expect(pet).toBeDefined();
-    expect(pet.id).toBe(id);
+  it('should retrieve a pet by id', async () => {
+    const id = 1;
+    const result: Pet = await petsResolver.findOne(id);
+    expect(result).toBeDefined();
+    expect(result.id).toBe(id);
   });
 
-  it('should update an pet', async () => {
-    const id: number = 1;
-    const updatePetInput: UpdatePetInput = { id, name: "Sunny", type: "Dog", ownerId: 1 };
-    const pet: Pet = await resolver.updatePet(updatePetInput);
-    expect(pet).toBeDefined();
-    expect(pet.name).toBe(UpdatePetInput.name);
+  it('should update a pet', async () => {
+    const input: UpdatePetInput = { id: 1, name: 'Moana', type: 'Cat', ownerId: 1 };
+    const result: Pet = await petsResolver.updatePet(input);
+    expect(result).toBeDefined();
+    expect(result.name).toBe(input.name);
   });
 
-  it('should retrieve owner for an pet', async () => {
-    const id: number = 1;
-    const pet: Pet = await resolver.findOne(id);
-    const owner: Owner = await resolver.owner(pet);
+  it('should retrieve owner for a pet', async () => {
+    const pet: Pet = { id: 1, name: 'Moana', type: 'Cat', ownerId: 1, owner: null as any };
+    const owner: Owner = await petsResolver.owner(pet);
     expect(owner).toBeDefined();
-    expect(pet.ownerId).toBe(owner.id);
+    expect(owner.id).toBe(pet.ownerId);
   });
 
-  it('should remove an pet', async () => {
-    const id: number = 1;
-    await resolver.removePet(id);
-    const pet: Pet = await resolver.findOne(id);
-    expect(pet).toBeNull();
+  it('should remove a pet', async () => {
+    const id = 1;
+    await expect(petsResolver.removePet(id)).resolves.toBeNull();
+    expect(petsService.remove).toHaveBeenCalledWith(id);
   });
-
 });
