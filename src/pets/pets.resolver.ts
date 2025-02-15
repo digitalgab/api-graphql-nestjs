@@ -3,7 +3,7 @@ import { Pet } from './pet.entity';
 import { PetsService } from './pets.service';
 import { CreatePetInput } from './dto/create-pet.input';
 import { UpdatePetInput } from './dto/update-pet.input';
-import { Owner } from 'src/owners/owner.entity';
+import { Owner } from '../owners/owner.entity';
 
 @Resolver(() => Pet)
 export class PetsResolver {

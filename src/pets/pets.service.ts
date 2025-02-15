@@ -4,8 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { FindManyOptions, Repository } from 'typeorm'
 import { CreatePetInput } from './dto/create-pet.input';
 import { UpdatePetInput } from './dto/update-pet.input';
-import { OwnersService } from 'src/owners/owners.service';
-import { Owner } from 'src/owners/owner.entity';
+import { OwnersService } from '../owners/owners.service';
+import { Owner } from '../owners/owner.entity';
 
 @Injectable()
 export class PetsService {

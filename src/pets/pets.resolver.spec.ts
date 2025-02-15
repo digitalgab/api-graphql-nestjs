@@ -5,7 +5,6 @@ import { CreatePetInput } from './dto/create-pet.input';
 import { UpdatePetInput } from './dto/update-pet.input';
 import { Pet } from 'src/pets/pet.entity';
 import { Owner } from 'src/owners/owner.entity';
-import { CreateOwnerInput } from 'src/owners/dto/create-owner.input';
 
 describe('PetsResolver', () => {
   let resolver: PetsResolver;
