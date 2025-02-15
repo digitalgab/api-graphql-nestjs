@@ -2,24 +2,36 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Pet } from './pet.entity';
 import { PetsService } from './pets.service';
 import { CreatePetInput } from './dto/create-pet.input';
+import { UpdatePetInput } from './dto/update-pet.input';
 
-@Resolver(of => Pet)
+@Resolver(() => Pet)
 export class PetsResolver {
   constructor(private petsService: PetsService) {}
 
-  @Query(returns => [Pet])
-  pets(): Promise<Pet[]> {
+  @Mutation(() => Pet)
+  createPet(@Args('createPetInput') createPetInput: CreatePetInput): Promise<Pet> {
+    return this.petsService.create(createPetInput);
+  }
+
+  @Query(() => [Pet], { name: 'pets' })
+  findAll(): Promise<Pet[]> {
     return this.petsService.findAll();
   }
    
-  @Query(returns => Pet)
-  pet(@Args('id', {type: () => Int}) id: number): Promise<Pet> {
+  @Query(() => Pet, { name: 'pet' })
+  findOne(@Args('id', {type: () => Int}) id: number): Promise<Pet> {
     return this.petsService.findOne(id);
   }
 
-  @Mutation(returns => Pet)
-  create(@Args('pet') pet: CreatePetInput): Promise<Pet> {
-    return this.petsService.create(pet);
+  @Mutation(() => Pet)
+  updatePet(@Args('updatePetInput') updatePetInput: UpdatePetInput) {
+    return this.petsService.update(updatePetInput.id, updatePetInput);
   }
+
+  @Mutation(() => Pet)
+  removePet(@Args('id', { type: () => Int }) id: number) {
+    return this.petsService.remove(id);
+  }
+
 }
 
