@@ -6,7 +6,7 @@ export class CreatePetInput {
   @IsString()
   @IsNotEmpty()
   @Field()
-  readonly name: string;
+  name: string;
 
   @IsString()
   @IsIn(['Cat', 'Dog', 'cat', 'dog'], {

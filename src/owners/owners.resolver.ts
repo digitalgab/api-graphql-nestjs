@@ -6,10 +6,10 @@ import { UpdateOwnerInput } from './dto/update-owner.input';
 
 @Resolver(() => Owner)
 export class OwnersResolver {
-  constructor(private readonly ownersService: OwnersService) {}
+  constructor(private ownersService: OwnersService) {}
 
   @Mutation(() => Owner)
-  createOwner(@Args('createOwnerInput') createOwnerInput: CreateOwnerInput) {
+  createOwner(@Args('createOwnerInput') createOwnerInput: CreateOwnerInput): Promise<Owner>{
     return this.ownersService.create(createOwnerInput);
   }
 

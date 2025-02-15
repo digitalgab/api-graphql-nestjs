@@ -1,5 +1,5 @@
 import { Field, InputType, Int } from "@nestjs/graphql";
-import { IsIn, IsNotEmpty, IsString } from "class-validator";
+import { IsIn, IsString } from "class-validator";
 
 @InputType()
 export class UpdatePetInput {
