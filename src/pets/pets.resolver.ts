@@ -4,6 +4,7 @@ import { PetsService } from './pets.service';
 import { CreatePetInput } from './dto/create-pet.input';
 import { UpdatePetInput } from './dto/update-pet.input';
 import { Owner } from '../owners/owner.entity';
+import { DeletePetInput } from './dto/delete-pet.input';
 
 @Resolver(() => Pet)
 export class PetsResolver {
@@ -30,8 +31,8 @@ export class PetsResolver {
   }
 
   @Mutation(() => Pet)
-  removePet(@Args('id', { type: () => Int }) id: number) {
-    return this.petsService.remove(id);
+  removePet(@Args('id') deletePetInput: DeletePetInput) {
+    return this.petsService.remove(deletePetInput.id);
   }
 
   @ResolveField(() => Owner)

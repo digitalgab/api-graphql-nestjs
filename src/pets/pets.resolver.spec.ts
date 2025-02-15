@@ -5,6 +5,7 @@ import { CreatePetInput } from './dto/create-pet.input';
 import { UpdatePetInput } from './dto/update-pet.input';
 import { Pet } from './pet.entity';
 import { Owner } from '../owners/owner.entity';
+import { DeletePetInput } from './dto/delete-pet.input';
 
 describe('PetsResolver', () => {
   let petsResolver: PetsResolver;
@@ -37,9 +38,9 @@ describe('PetsResolver', () => {
   });
 
   it('should create a new pet', async () => {
-    const input: CreatePetInput = { name: 'Moana', type: 'Cat', ownerId: 1 };
-    const result = await petsResolver.createPet(input);
-    expect(result).toMatchObject(input);
+    const pet: CreatePetInput = { name: 'Moana', type: 'Cat', ownerId: 1 };
+    const result = await petsResolver.createPet(pet);
+    expect(result).toMatchObject(pet);
   });
 
   it('should retrieve all pets', async () => {
@@ -54,9 +55,9 @@ describe('PetsResolver', () => {
   });
 
   it('should update a pet', async () => {
-    const input: UpdatePetInput = { id: 1, name: 'Moana', type: 'Cat', ownerId: 1 };
-    const result = await petsResolver.updatePet(input);
-    expect(result).toMatchObject(input);
+    const pet: UpdatePetInput = { id: 1, name: 'Moana', type: 'Cat', ownerId: 1 };
+    const result = await petsResolver.updatePet(pet);
+    expect(result).toMatchObject(pet);
   });
 
   it('should retrieve owner for a pet', async () => {
@@ -65,9 +66,9 @@ describe('PetsResolver', () => {
   });
 
   it('should remove a pet', async () => {
-    const id = 1;
-    await expect(petsResolver.removePet(id)).resolves.toBeNull();
-    expect(petsService.remove).toHaveBeenCalledWith(id);
+    const pet: DeletePetInput = { id: 1 };
+    await expect(petsResolver.removePet(pet)).resolves.toBeNull();
+    expect(petsService.remove).toHaveBeenCalledWith(pet.id);
   });
 });
 
