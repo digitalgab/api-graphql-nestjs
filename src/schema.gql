@@ -2,18 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Owner {
-  id: Int!
-  name: String!
-  pets: [Pet!]
-}
-
 type Pet {
   id: Int!
   name: String!
   type: String
   ownerId: Int!
   owner: Owner
+}
+
+type Owner {
+  id: Int!
+  name: String!
+  pets: [Pet!]
 }
 
 type Query {

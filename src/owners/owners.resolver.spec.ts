@@ -7,12 +7,14 @@ import { CreateOwnerInput } from './dto/create-owner.input';
 import { UpdateOwnerInput } from './dto/update-owner.input';
 
 describe('OwnersResolver', () => {
-  let resolver: OwnersResolver;
+  let owersResolver: OwnersResolver;
   let ownersService: OwnersService;
+  let ownerMock: Owner;
+  let petMock: Pet;
 
   beforeEach(async () => {
-    const petMock: Pet = { id: 1, name: 'Moana', type: 'Cat', ownerId: 1, owner: null as any };
-    const ownerMock: Owner = { id: 1, name: 'Gabriel Brelaz', pets: [petMock] };
+    petMock = { id: 1, name: 'Moana', type: 'Cat', ownerId: 1, owner: null as any };
+    ownerMock = { id: 1, name: 'Gabriel Brelaz', pets: [petMock] };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -31,50 +33,43 @@ describe('OwnersResolver', () => {
       ],
     }).compile();
 
-    resolver = module.get<OwnersResolver>(OwnersResolver);
+    owersResolver = module.get<OwnersResolver>(OwnersResolver);
     ownersService = module.get<OwnersService>(OwnersService);
   });
 
   it('should create a new owner', async () => {
     const createOwnerInput: CreateOwnerInput = { name: 'Gabriel Brelaz' };
-    const owner: Owner = await resolver.createOwner(createOwnerInput);
+    const owner: Owner = await owersResolver.createOwner(createOwnerInput);
     expect(owner).toBeDefined();
     expect(owner.name).toBe(createOwnerInput.name);
   });
 
   it('should retrieve all owners', async () => {
-    const owners: Owner[] = await resolver.findAll();
-    expect(owners).toBeDefined();
-    expect(owners.length).toBeGreaterThan(0);
+    const owners: Owner[] = await owersResolver.findAll();
+    expect(owners).toEqual([ownerMock]);
   });
 
   it('should retrieve an owner by id', async () => {
     const id: number = 1;
-    const owner: Owner = await resolver.findOne(id);
-    expect(owner).toBeDefined();
-    expect(owner.id).toBe(id);
+    const owner: Owner = await owersResolver.findOne(id);
+    expect(owner).toEqual(ownerMock);
   });
 
   it('should update an owner', async () => {
     const id: number = 1;
     const updateOwnerInput: UpdateOwnerInput = { id, name: 'Gabriel Brelaz' };
-    const owner: Owner = await resolver.updateOwner(updateOwnerInput);
-    expect(owner).toBeDefined();
-    expect(owner.name).toBe(updateOwnerInput.name);
+    const owner: Owner = await owersResolver.updateOwner(updateOwnerInput);
+    expect(owner).toEqual(ownerMock);
   });
 
   it('should retrieve pets for an owner', async () => {
-    const ownerId: number = 1;
-    const owner: Owner = await resolver.findOne(ownerId);
-    const pets: Pet[] = await resolver.pets(owner);
-    expect(pets).toBeDefined();
-    expect(pets.length).toBeGreaterThan(0);
+    const pets: Pet[] = await owersResolver.pets(ownerMock);
+    expect(pets).toEqual([petMock]);
   });
 
   it('should remove an owner', async () => {
-    const id: number = 1;
-    await expect(resolver.removeOwner(id)).resolves.toBeDefined();
-    expect(ownersService.remove).toHaveBeenCalledWith(id);
+    const ownerId = 1;
+    await expect(owersResolver.removeOwner(ownerId)).resolves.toBeDefined();
+    expect(ownersService.remove).toHaveBeenCalledWith(ownerId);
   });
 });
-

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { PetsModule } from './pets/pets.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { OwnersModule } from './owners/owners.module';
+import { PetsModule } from './pets/pets.module';
 
 @Module({
   imports: [
